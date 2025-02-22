@@ -4,6 +4,9 @@ import { nanoid } from 'nanoid';
 
 export async function POST(request: Request) {
     try {
+        // Pastikan koneksi database terbuka
+        await prisma.$connect();
+
         const { url } = await request.json();
 
         // Validasi URL
@@ -24,16 +27,27 @@ export async function POST(request: Request) {
         }
 
         // Generate short code
-        const shortCode = nanoid(8); // 8 karakter random
+        let shortCode = nanoid(8);
+        let attempts = 0;
+        const maxAttempts = 3;
 
-        // Cek apakah shortCode sudah ada
-        const existingUrl = await prisma.url.findFirst({
-            where: {
-                ShortCode: shortCode,
-            },
-        });
+        // Coba generate shortCode unik dengan beberapa percobaan
+        while (attempts < maxAttempts) {
+            const existingUrl = await prisma.url.findFirst({
+                where: {
+                    ShortCode: shortCode,
+                },
+            });
 
-        if (existingUrl) {
+            if (!existingUrl) {
+                break;
+            }
+
+            shortCode = nanoid(8);
+            attempts++;
+        }
+
+        if (attempts >= maxAttempts) {
             return NextResponse.json(
                 { error: 'Gagal membuat kode unik, silakan coba lagi' },
                 { status: 500 }
@@ -49,7 +63,12 @@ export async function POST(request: Request) {
             },
         });
 
-        return NextResponse.json(newUrl);
+        return NextResponse.json({
+            id: newUrl.id,
+            ShortCode: newUrl.ShortCode,
+            originalUrl: newUrl.originalUrl,
+            visits: newUrl.visits
+        });
     } catch (error) {
         console.error('Error creating shortened URL:', error);
         return NextResponse.json(

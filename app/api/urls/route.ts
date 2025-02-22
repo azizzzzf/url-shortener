@@ -3,6 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
+        // Pastikan koneksi database terbuka
+        await prisma.$connect();
+
         const urls = await prisma.url.findMany({
             orderBy: { CreatedAt: 'desc' },
             take: 10,
@@ -26,38 +29,43 @@ export async function GET() {
 }
 
 export async function DELETE(request: Request) {
-  try {
-    const { id } = await request.json();
+    try {
+        // Pastikan koneksi database terbuka
+        await prisma.$connect();
 
-    if (!id) {
-      return NextResponse.json(
-        { error: 'ID tidak ditemukan' },
-        { status: 400 }
-      );
+        const { id } = await request.json();
+
+        if (!id) {
+            return NextResponse.json(
+                { error: 'ID tidak ditemukan' },
+                { status: 400 }
+            );
+        }
+
+        const deletedUrl = await prisma.url.delete({
+            where: {
+                id: id,
+            },
+        });
+
+        if (!deletedUrl) {
+            return NextResponse.json(
+                { error: 'URL tidak ditemukan' },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(
+            { message: 'URL berhasil dihapus' },
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error('Error menghapus URL:', error);
+        return NextResponse.json(
+            { error: 'Gagal menghapus URL' },
+            { status: 500 }
+        );
+    } finally {
+        await prisma.$disconnect();
     }
-
-    const deletedUrl = await prisma.url.delete({
-      where: {
-        id: id,
-      },
-    });
-
-    if (!deletedUrl) {
-      return NextResponse.json(
-        { error: 'URL tidak ditemukan' },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(
-      { message: 'URL berhasil dihapus' },
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error('Error menghapus URL:', error);
-    return NextResponse.json(
-      { error: 'Gagal menghapus URL' },
-      { status: 500 }
-    );
-  }
 }
