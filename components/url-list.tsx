@@ -34,7 +34,7 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
   const [isLoading, setIsLoading] = useState(true);
   
   const shortenerUrl = (code: string) => 
-    `${process.env.NEXT_PUBLIC_BASE_URL}/${code}`;
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/${code}`;
 
   const copyToClipboard = async (url: string) => {
     try {
