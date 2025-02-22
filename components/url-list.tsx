@@ -39,10 +39,10 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
   const copyToClipboard = async (url: string) => {
     try {
       await navigator.clipboard.writeText(url);
-      alert('URL berhasil disalin!');
+      alert('URL copied to clipboard!');
     } catch (error) {
-      console.error('Gagal menyalin URL:', error);
-      alert('Gagal menyalin URL. Silakan coba lagi.');
+      console.error('Copy URL Error:', error);
+      alert('Failed to copy URL. Please try again.');
     }
   };
 
@@ -67,10 +67,10 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
         onUrlsChange();
       }
 
-      alert('URL berhasil dihapus');
+      alert('URL deleted successfully');
     } catch (error) {
-      console.error('Error menghapus URL:', error);
-      alert('Gagal menghapus URL. Silakan coba lagi.');
+      console.error('Error deleting URL:', error);
+      alert('Failed to delete URL. Please try again.');
     }
   };
 
@@ -218,7 +218,7 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
             ))
           ) : (
             <div className="text-center py-4 text-gray-500">
-              Tidak ada URL yang tersedia
+              Huft, sadly no shortened URL available this time
             </div>
           )}
         </div>

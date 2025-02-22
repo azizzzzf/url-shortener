@@ -27,7 +27,7 @@ export default function ShortenForm() {
         
         // Validasi URL
         if (!validateUrl(url)) {
-            setError('URL tidak valid. Pastikan URL dimulai dengan http:// atau https://');
+            setError('URL is not valid. Please enter a valid URL');
             setIsLoading(false);
             return;
         }
@@ -44,7 +44,7 @@ export default function ShortenForm() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || 'Gagal menyingkat URL');
+                throw new Error(data.error || 'Failed to shorten URL');
             }
 
             // Reset form dan refresh data
@@ -53,10 +53,10 @@ export default function ShortenForm() {
             router.refresh();
 
             // Tampilkan URL yang berhasil disingkat
-            alert(`URL berhasil disingkat: ${window.location.origin}/${data.ShortCode}`);
+            alert(`URL shortener success: ${window.location.origin}/${data.ShortCode}`);
         } catch (error) {
             console.error('Error shortening URL:', error);
-            setError('Gagal menyingkat URL. Silakan coba lagi.');
+            setError('Failed to shorten URL. Please try again.');
         } finally {
             setIsLoading(false);
         }
@@ -70,7 +70,7 @@ export default function ShortenForm() {
                     onChange={(e) => setUrl(e.target.value)} 
                     className='h-10' 
                     type='url' 
-                    placeholder='Enter URL to shorten (e.g., https://example.com)' 
+                    placeholder='Please enter URL to shorten (e.g., https://example.com)' 
                     required
                     disabled={isLoading}
                 />
