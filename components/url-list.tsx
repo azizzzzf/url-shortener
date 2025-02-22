@@ -34,7 +34,7 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
   const [isLoading, setIsLoading] = useState(true);
   
   const shortenerUrl = (code: string) => 
-    `${window.location.origin}/${code}`;
+    `${process.env.NEXT_PUBLIC_BASE_URL}/${code}`;
 
   const copyToClipboard = async (url: string) => {
     try {
@@ -211,7 +211,7 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
               </div>
             ))
           )}
-        </div>
+    </div>
       </CardContent>
     </Card>
   );
