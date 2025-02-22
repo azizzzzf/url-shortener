@@ -79,13 +79,19 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
       const response = await fetch('/api/urls');
       const data = await response.json();
       
-      // Update state hanya jika data berbeda
-      setUrls(prevUrls => {
-        const hasChanges = JSON.stringify(prevUrls) !== JSON.stringify(data);
-        return hasChanges ? data : prevUrls;
-      });
+      // Pastikan data adalah array
+      if (Array.isArray(data)) {
+        setUrls(prevUrls => {
+          const hasChanges = JSON.stringify(prevUrls) !== JSON.stringify(data);
+          return hasChanges ? data : prevUrls;
+        });
+      } else {
+        console.error('Data yang diterima bukan array:', data);
+        setUrls([]);
+      }
     } catch (error) {
-      console.error('Error fetching URLs', error);
+      console.error('Error fetching URLs:', error);
+      setUrls([]);
     }
   };
 
@@ -129,7 +135,7 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
                 </div>
               ))}
             </>
-          ) : (
+          ) : urls && urls.length > 0 ? (
             urls.map((url) => (
               <div
                 key={url.id}
@@ -210,8 +216,12 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
                 </div>
               </div>
             ))
+          ) : (
+            <div className="text-center py-4 text-gray-500">
+              Tidak ada URL yang tersedia
+            </div>
           )}
-    </div>
+        </div>
       </CardContent>
     </Card>
   );

@@ -16,13 +16,12 @@ export async function GET() {
         });
         
         console.log('Fetched URLs:', urls);
-        await prisma.$disconnect();
-        
-        return NextResponse.json(urls);
+        return NextResponse.json(urls || []);
     } catch(error) {
         console.error('Error fetching URLs:', error);
+        return NextResponse.json([]);
+    } finally {
         await prisma.$disconnect();
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
 
