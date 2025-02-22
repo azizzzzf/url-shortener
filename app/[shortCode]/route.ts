@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
-import { type NextRequest } from 'next/server';
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { shortCode: string } }
+  request: Request,
+  context: { params: { shortCode: string } }
 ) {
   try {
-    const shortCode = params.shortCode;
+    const shortCode = context.params.shortCode;
     console.log('Processing shortCode:', shortCode);
 
     // Cari URL berdasarkan shortCode
