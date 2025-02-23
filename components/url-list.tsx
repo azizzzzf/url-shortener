@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { Button } from './ui/button';
-import Link from 'next/link';
-import { CopyIcon, EyeIcon, Trash2Icon } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { Button } from "./ui/button";
+import Link from "next/link";
+import { CopyIcon, EyeIcon, Trash2Icon } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   AlertDialog,
@@ -19,78 +19,82 @@ import {
 } from "@/components/ui/alert-dialog";
 
 type Url = {
-  id: string;
-  ShortCode: string;
-  originUrl: string;
-  visits: number;
-};
+  id: string
+  ShortCode: string
+  originUrl: string
+  visits: number
+}
 
 interface UrlListProps {
-  onUrlsChange?: () => void;
+  onUrlsChange?: () => void
 }
 
 export default function UrlList({ onUrlsChange }: UrlListProps) {
   const [urls, setUrls] = useState<Url[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  
-  const shortenerUrl = (code: string) => 
-    `${window.location.origin}/${code}`;
+
+  const shortenerUrl = (code: string) => {
+    // Gunakan domain pendek jika tersedia, jika tidak gunakan domain saat ini
+    const domain = process.env.NEXT_PUBLIC_SHORT_DOMAIN || window.location.host;
+    // Gunakan https sebagai default protocol
+    return `https://${domain}/${code}`;
+  };
 
   const copyToClipboard = async (url: string) => {
     try {
       await navigator.clipboard.writeText(url);
-      alert('URL copied to clipboard!');
+      alert("URL copied to clipboard!");
     } catch (error) {
-      console.error('Copy URL Error:', error);
-      alert('Failed to copy URL. Please try again.');
+      console.error("Copy URL Error:", error);
+      alert("Failed to copy URL. Please try again.");
     }
   };
 
   const deleteUrl = async (id: string) => {
     try {
       const response = await fetch(`/api/urls`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ id }),
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       // Update state lokal untuk menghapus URL
-      setUrls(prevUrls => prevUrls.filter(url => url.id !== id));
-      
+      setUrls((prevUrls) => prevUrls.filter((url) => url.id !== id));
+
       if (onUrlsChange) {
         onUrlsChange();
       }
 
-      alert('URL deleted successfully');
+      alert("URL deleted successfully");
     } catch (error) {
-      console.error('Error deleting URL:', error);
-      alert('Failed to delete URL. Please try again.');
+      console.error("Error deleting URL:", error);
+      alert("Failed to delete URL. Please try again.");
     }
   };
 
   const fetchUrls = async () => {
     try {
-      const response = await fetch('/api/urls');
+      const response = await fetch("/api/urls");
       const data = await response.json();
-      
+
       // Pastikan data adalah array
       if (Array.isArray(data)) {
-        setUrls(prevUrls => {
+        setUrls((prevUrls) => {
           const hasChanges = JSON.stringify(prevUrls) !== JSON.stringify(data);
           return hasChanges ? data : prevUrls;
         });
       } else {
-        console.error('Data yang diterima bukan array:', data);
+        console.error("Data yang diterima bukan array:", data);
         setUrls([]);
       }
     } catch (error) {
-      console.error('Error fetching URLs:', error);
+      console.error("Error fetching URLs:", error);
       setUrls([]);
     }
   };
@@ -110,59 +114,57 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
   }, [onUrlsChange]);
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Recent URLs</CardTitle>
+    <Card className="border rounded-xl shadow-md bg-white">
+      <CardHeader className="px-4 sm:px-6 py-4 border-b bg-gray-50/50">
+        <CardTitle className="text-base sm:text-lg font-semibold text-gray-900">Recent URLs</CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {isLoading ? (
-            // Skeleton loading
-            <>
-              {[...Array(3)].map((_, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between gap-4 rounded-lg border p-3 animate-pulse"
-                >
-                  <div className="flex-1">
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  </div>
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="w-8 h-8 bg-gray-200 rounded"></div>
-                    <div className="w-8 h-8 bg-gray-200 rounded"></div>
-                    <div className="w-20 h-8 bg-gray-200 rounded-full"></div>
+      <CardContent className="p-0 divide-y divide-gray-100">
+        {isLoading ? (
+          // Skeleton loading
+          <>
+            {[...Array(3)].map((_, index) => (
+              <div key={index} className="p-4 sm:p-6 animate-pulse">
+                <div className="space-y-3">
+                  <div className="h-5 bg-gray-100 rounded-md w-2/3 animate-pulse" />
+                  <div className="h-4 bg-gray-100 rounded-md w-1/2 animate-pulse" />
+                  <div className="flex items-center justify-end gap-2">
+                    <div className="h-8 w-8 bg-gray-100 rounded-md animate-pulse" />
+                    <div className="h-8 w-8 bg-gray-100 rounded-md animate-pulse" />
+                    <div className="h-8 w-16 bg-gray-100 rounded-full animate-pulse" />
                   </div>
                 </div>
-              ))}
-            </>
-          ) : urls && urls.length > 0 ? (
-            urls.map((url) => (
-              <div
-                key={url.id}
-                className="flex items-center justify-between gap-4 rounded-lg border p-3 transition-colors hover:bg-muted/50"
-              >
-                <Link
-                  href={`/${url.ShortCode}`}
-                  target="_blank"
-                  className="text-primary hover:underline truncate max-w-[200px] sm:max-w-[300px] md:max-w-[400px]"
-                >
-                  {shortenerUrl(url.ShortCode)}
-                </Link>
-                <div className="flex items-center gap-2 sm:gap-3">
+              </div>
+            ))}
+          </>
+        ) : urls && urls.length > 0 ? (
+          urls.map((url) => (
+            <div key={url.id} className="p-4 sm:p-6 group hover:bg-gray-50/75 transition-colors duration-200">
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <Link
+                    href={`/${url.ShortCode}`}
+                    target="_blank"
+                    className="text-primary hover:text-primary/80 hover:underline block font-medium transition-colors duration-200"
+                  >
+                    {shortenerUrl(url.ShortCode)}
+                  </Link>
+                  <p className="text-sm text-gray-500 truncate">{url.originUrl}</p>
+                </div>
+                <div className="flex items-center justify-end gap-2">
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
                           variant="ghost"
-                          size="icon"
-                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          size="sm"
+                          className="h-8 w-8 hover:bg-gray-100 transition-colors duration-200"
                           onClick={() => copyToClipboard(shortenerUrl(url.ShortCode))}
                         >
-                          <CopyIcon className="w-4 h-4" />
+                          <CopyIcon className="h-4 w-4" />
                           <span className="sr-only">Copy URL</span>
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Copy to clipboard</TooltipContent>
+                      <TooltipContent side="top">Copy to clipboard</TooltipContent>
                     </Tooltip>
 
                     <AlertDialog>
@@ -171,29 +173,29 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
                           <AlertDialogTrigger asChild>
                             <Button
                               variant="ghost"
-                              size="icon"
-                              className="text-destructive hover:text-destructive/90 hover:bg-destructive/10 transition-colors"
+                              size="sm"
+                              className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
                             >
-                              <Trash2Icon className="w-4 h-4" />
+                              <Trash2Icon className="h-4 w-4" />
                               <span className="sr-only">Delete URL</span>
                             </Button>
                           </AlertDialogTrigger>
                         </TooltipTrigger>
-                        <TooltipContent>Delete URL</TooltipContent>
+                        <TooltipContent side="top">Delete URL</TooltipContent>
                       </Tooltip>
 
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogTitle>Delete URL?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the shortened URL.
+                            This will permanently delete the shortened URL. This action cannot be undone.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={() => deleteUrl(url.id)}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            className="bg-red-500 hover:bg-red-600 text-white"
                           >
                             Delete
                           </AlertDialogAction>
@@ -201,28 +203,22 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
                       </AlertDialogContent>
                     </AlertDialog>
 
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 hover:bg-blue-100 transition-colors">
-                          <EyeIcon className="h-4 w-4 text-blue-500" />
-                          <span className="text-sm font-medium text-blue-600">{url.visits}</span>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Jumlah kunjungan: {url.visits}</p>
-                      </TooltipContent>
-                    </Tooltip>
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100">
+                      <EyeIcon className="h-3.5 w-3.5" />
+                      <span className="text-xs font-medium">{url.visits}</span>
+                    </div>
                   </TooltipProvider>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="text-center py-4 text-gray-500">
-              Huft, sadly no shortened URL available this time
             </div>
-          )}
-        </div>
+          ))
+        ) : (
+          <div className="px-4 sm:px-6 py-16 text-center">
+            <p className="text-sm text-gray-500 font-medium">No shortened URLs yet</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
 }
+
