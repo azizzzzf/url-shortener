@@ -34,10 +34,7 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   const shortenerUrl = (code: string) => {
-    // Gunakan domain pendek jika tersedia, jika tidak gunakan domain saat ini
-    const domain = process.env.NEXT_PUBLIC_SHORT_DOMAIN || window.location.host;
-    // Gunakan https sebagai default protocol
-    return `https://${domain}/${code}`;
+    return `https://${window.location.host}/${code}`;
   };
 
   const copyToClipboard = async (url: string) => {

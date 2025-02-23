@@ -21,8 +21,7 @@ export default function ShortenForm() {
     };
 
     const getShortUrl = (code: string) => {
-        const domain = process.env.NEXT_PUBLIC_SHORT_DOMAIN || window.location.host;
-        return `https://${domain}/${code}`;
+        return `https://${window.location.host}/${code}`;
     };
 
     const handleSumbit = async(e: React.FormEvent) => {
