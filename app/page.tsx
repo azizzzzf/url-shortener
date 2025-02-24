@@ -17,6 +17,11 @@ export default function Home() {
           <UrlShortenerContainer />
         </div>
       </div>
+      <footer className="py-6 text-center">
+        <p className="text-sm text-gray-500">
+          © {new Date().getFullYear()} by <span className="font-bold">Azis Fathur Rahman</span>. All rights reserved.
+        </p>
+      </footer>
     </main>
   );
 }
