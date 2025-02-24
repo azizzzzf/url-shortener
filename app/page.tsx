@@ -24,13 +24,6 @@ export default function Home() {
             >
               {[
                 <TextShimmerWave 
-                  key="1"
-                  duration={2}
-                  className="text-[#8a9a5b] [--base-color:#8a9a5b] [--base-gradient-color:#bcb88a]"
-                >
-                  Transform your long URLs into short, shareable links
-                </TextShimmerWave>,
-                <TextShimmerWave 
                   key="2"
                   duration={2}
                   className="text-[#8a9a5b] [--base-color:#8a9a5b] [--base-gradient-color:#bcb88a]"
