@@ -74,15 +74,15 @@ export default function ShortenForm() {
                         <Input 
                             value={url} 
                             onChange={(e) => setUrl(e.target.value)} 
-                            className="h-11 w-full pr-4 font-medium transition-colors focus:border-gray-300 focus:ring-1 focus:ring-gray-300" 
+                            className="h-11 w-full pr-4 font-medium bg-[#013220]/30 border-[#8a9a5b]/20 text-[#bcb88a] placeholder:text-[#8a9a5b]/60 focus:border-[#8a9a5b]/40 focus:ring-1 focus:ring-[#8a9a5b]/40 transition-colors" 
                             type="url" 
-                            placeholder="Enter your long URL..." 
+                            placeholder="Enter your long URL here" 
                             required
                             disabled={isLoading}
                         />
                     </div>
                     <Button 
-                        className="h-11 px-8 sm:px-12 font-medium"
+                        className="h-11 px-8 sm:px-12 font-medium bg-[#bcb88a] hover:bg-[#8a9a5b] text-[#013220] border-none shadow-lg transition-all duration-200 hover:shadow-xl"
                         type="submit"
                         disabled={isLoading}
                     >
@@ -100,7 +100,7 @@ export default function ShortenForm() {
                     </Button>
                 </div>
                 {error && (
-                    <p className="text-sm text-red-500 animate-in fade-in slide-in-from-top-1">
+                    <p className="text-sm text-red-400 animate-in fade-in slide-in-from-top-1">
                         {error}
                     </p>
                 )}
