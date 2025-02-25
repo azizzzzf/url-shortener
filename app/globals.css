@@ -99,12 +99,21 @@ body {
   100% { background-position: 30px 30px; }
 }
 
+@keyframes text-glow {
+  0%, 100% { text-shadow: 0 0 4px rgba(188, 184, 138, 0.3); }
+  50% { text-shadow: 0 0 10px rgba(188, 184, 138, 0.6), 0 0 15px rgba(188, 184, 138, 0.3); }
+}
+
 .animate-grid-pulse {
   animation: grid-pulse 8s infinite ease-in-out;
 }
 
 .animate-grid-lines {
   animation: grid-lines-fade 20s infinite linear;
+}
+
+.animate-text-glow {
+  animation: text-glow 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .animate-blob1 {

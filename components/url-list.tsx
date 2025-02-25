@@ -115,7 +115,7 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
   return (
     <Card className="bg-zinc-900/20 backdrop-blur-xl border border-zinc-800/30 shadow-xl rounded-xl overflow-hidden">
       <CardHeader className="px-6 py-5 border-b border-zinc-800/30 bg-zinc-900/40 backdrop-filter backdrop-blur-md">
-        <CardTitle className="text-lg font-medium text-zinc-100 flex items-center">
+        <CardTitle className="text-lg font-medium text-[#f5f5f0] flex items-center">
           <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 mr-2.5 animate-pulse"></div>
           Recent URLs
         </CardTitle>
@@ -152,12 +152,12 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
                     <Link
                       href={`/${url.ShortCode}`}
                       target="_blank"
-                      className="text-zinc-100 hover:text-emerald-300 hover:underline block font-medium transition-colors duration-200 truncate pr-2 flex items-center"
+                      className="text-[#f5f5f0] hover:text-emerald-300 hover:underline block font-medium transition-colors duration-200 truncate pr-2 flex items-center"
                     >
                       <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400/70 mr-2"></span>
                       {shortenerUrl(url.ShortCode)}
                     </Link>
-                    <p className="text-sm text-zinc-500/80 truncate pr-2 pl-3.5">{url.originUrl}</p>
+                    <p className="text-sm text-[#e0e0d0]/80 truncate pr-2 pl-3.5">{url.originUrl}</p>
                   </div>
                   <div className="flex items-center justify-end gap-2 flex-shrink-0">
                     <TooltipProvider>
@@ -168,8 +168,8 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
                             size="sm"
                             className={`h-8 w-8 rounded-lg ${
                               copiedId === url.id
-                                ? "bg-emerald-500/20 text-emerald-300"
-                                : "text-zinc-300 hover:text-zinc-100 hover:bg-zinc-700/40"
+                                ? "bg-emerald-500/20 text-[#f5f5f0]"
+                                : "text-[#e0e0d0] hover:text-[#f5f5f0] hover:bg-zinc-700/40"
                             } transition-all duration-200 flex-shrink-0`}
                             onClick={() => copyToClipboard(url.id, shortenerUrl(url.ShortCode))}
                           >
@@ -179,7 +179,7 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
                         </TooltipTrigger>
                         <TooltipContent
                           side="top"
-                          className="bg-zinc-800/90 backdrop-blur-md text-zinc-100 border-zinc-700/30 shadow-xl"
+                          className="bg-zinc-800/90 backdrop-blur-md text-[#f5f5f0] border-zinc-700/30 shadow-xl"
                         >
                           {copiedId === url.id ? "Copied!" : "Copy to clipboard"}
                         </TooltipContent>
@@ -192,7 +192,7 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-8 w-8 rounded-lg text-zinc-300 hover:text-red-300 hover:bg-red-500/20 transition-all duration-200 flex-shrink-0"
+                                className="h-8 w-8 rounded-lg text-[#e0e0d0] hover:text-red-300 hover:bg-red-500/20 transition-all duration-200 flex-shrink-0"
                               >
                                 <Trash2Icon className="h-4 w-4" />
                                 <span className="sr-only">Delete URL</span>
@@ -201,7 +201,7 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
                           </TooltipTrigger>
                           <TooltipContent
                             side="top"
-                            className="bg-zinc-800/90 backdrop-blur-md text-zinc-100 border-zinc-700/30 shadow-xl"
+                            className="bg-zinc-800/90 backdrop-blur-md text-[#f5f5f0] border-zinc-700/30 shadow-xl"
                           >
                             Delete URL
                           </TooltipContent>
@@ -209,18 +209,18 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
 
                         <AlertDialogContent className="bg-zinc-900/95 backdrop-blur-xl border border-zinc-800/40 shadow-2xl">
                           <AlertDialogHeader>
-                            <AlertDialogTitle className="text-zinc-100">Delete URL?</AlertDialogTitle>
-                            <AlertDialogDescription className="text-zinc-400">
+                            <AlertDialogTitle className="text-[#f5f5f0]">Delete URL?</AlertDialogTitle>
+                            <AlertDialogDescription className="text-[#e0e0d0]/80">
                               This will permanently delete the shortened URL. This action cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel className="bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-zinc-100 border-none transition-all duration-200">
+                            <AlertDialogCancel className="bg-zinc-800 text-[#e0e0d0] hover:bg-zinc-700 hover:text-[#f5f5f0] border-none transition-all duration-200">
                               Cancel
                             </AlertDialogCancel>
                             <AlertDialogAction
                               onClick={() => deleteUrl(url.id)}
-                              className="bg-red-500/80 hover:bg-red-500 text-white border-none transition-all duration-200"
+                              className="bg-red-500/80 hover:bg-red-500 text-[#f5f5f0] border-none transition-all duration-200"
                             >
                               Delete
                             </AlertDialogAction>
@@ -228,7 +228,7 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
                         </AlertDialogContent>
                       </AlertDialog>
 
-                      <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-800/60 backdrop-blur-md text-zinc-300 border border-zinc-700/30 shadow-inner">
+                      <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-800/60 backdrop-blur-md text-[#f5f5f0] border border-zinc-700/30 shadow-inner">
                         <EyeIcon className="h-3.5 w-3.5" />
                         <span className="text-xs font-medium">{url.visits}</span>
                       </div>
@@ -240,10 +240,10 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
           ) : (
             <div className="px-4 sm:px-6 py-16 text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-zinc-800/40 backdrop-blur-md mb-4">
-                <EyeIcon className="h-5 w-5 text-zinc-500" />
+                <EyeIcon className="h-5 w-5 text-[#e0e0d0]/60" />
               </div>
-              <p className="text-sm text-zinc-500 font-medium">No shortened URLs yet</p>
-              <p className="text-xs text-zinc-600 mt-2">Create your first shortened URL above</p>
+              <p className="text-sm text-[#f5f5f0] font-medium">No shortened URLs yet</p>
+              <p className="text-xs text-[#e0e0d0]/80 mt-2">Create your first shortened URL above</p>
             </div>
           )}
         </div>
