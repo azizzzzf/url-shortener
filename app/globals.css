@@ -89,6 +89,24 @@ body {
   50% { transform: translate(-5%, 10%) scale(1.15); }
 }
 
+@keyframes grid-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes grid-lines-fade {
+  0% { background-position: 0px 0px; }
+  100% { background-position: 30px 30px; }
+}
+
+.animate-grid-pulse {
+  animation: grid-pulse 8s infinite ease-in-out;
+}
+
+.animate-grid-lines {
+  animation: grid-lines-fade 20s infinite linear;
+}
+
 .animate-blob1 {
   animation: blob1 20s infinite ease-in-out;
 }
