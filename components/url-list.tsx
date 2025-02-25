@@ -228,8 +228,8 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
                         </AlertDialogContent>
                       </AlertDialog>
 
-                      <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-800/60 backdrop-blur-md text-[#f5f5f0] border border-zinc-700/30 shadow-inner">
-                        <EyeIcon className="h-3.5 w-3.5" />
+                      <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-[#013220]/60 to-[#014421]/40 backdrop-blur-md text-[#f5f5f0] border border-[#8a9a5b]/30 shadow-inner group-hover:from-[#013220]/70 group-hover:to-[#014421]/50 transition-all duration-300">
+                        <EyeIcon className="h-3.5 w-3.5 text-emerald-400" />
                         <span className="text-xs font-medium">{url.visits}</span>
                       </div>
                     </TooltipProvider>
@@ -239,8 +239,8 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
             ))
           ) : (
             <div className="px-4 sm:px-6 py-16 text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-zinc-800/40 backdrop-blur-md mb-4">
-                <EyeIcon className="h-5 w-5 text-[#e0e0d0]/60" />
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-[#013220]/40 to-[#014421]/20 backdrop-blur-md mb-4 border border-[#8a9a5b]/20">
+                <EyeIcon className="h-5 w-5 text-emerald-400" />
               </div>
               <p className="text-sm text-[#f5f5f0] font-medium">No shortened URLs yet</p>
               <p className="text-xs text-[#e0e0d0]/80 mt-2">Create your first shortened URL above</p>
