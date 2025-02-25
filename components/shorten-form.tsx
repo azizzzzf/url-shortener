@@ -38,24 +38,11 @@ export default function ShortenForm() {
   };
 
   /**
-   * Menangani proses penyalinan URL ke clipboard
-   * @param {string} textToCopy - Teks yang akan disalin ke clipboard
-   */
-  const handleCopyToClipboard = async (textToCopy: string): Promise<void> => {
-    try {
-      await navigator.clipboard.writeText(textToCopy);
-      alert("URL copied to clipboard!");
-    } catch (err) {
-      console.error("Failed to copy URL:", err);
-    }
-  };
-
-  /**
    * Mengirim permintaan ke API untuk mempersingkat URL
    */
   const shortenUrl = async (): Promise<void> => {
     try {
-      const response = await fetch("/api/urls", {
+      const response = await fetch("/api/shorten", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,13 +60,10 @@ export default function ShortenForm() {
       setUrl("");
       
       // Buat URL lengkap
-      const shortenedUrl = `https://${window.location.host}/${data.shortCode}`;
+      const shortenedUrl = `https://${window.location.host}/${data.ShortCode}`;
       
       // Tampilkan pesan sukses
-      alert(`URL shortened successfully! Your shortened URL is: ${shortenedUrl}`);
-      
-      // Salin ke clipboard
-      await handleCopyToClipboard(shortenedUrl);
+      alert(`URL shortened successfully! Your shortened URL is: ${shortenedUrl}\n\nYou can copy this URL manually.`);
       
     } catch (error) {
       console.error("Error shortening URL:", error);

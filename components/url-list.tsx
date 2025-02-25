@@ -21,7 +21,7 @@ import {
 type Url = {
   id: string
   ShortCode: string
-  originUrl: string
+  originalUrl: string
   visits: number
 }
 
@@ -157,7 +157,7 @@ export default function UrlList({ onUrlsChange }: UrlListProps) {
                       <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400/70 mr-2"></span>
                       {shortenerUrl(url.ShortCode)}
                     </Link>
-                    <p className="text-sm text-[#e0e0d0]/80 truncate pr-2 pl-3.5">{url.originUrl}</p>
+                    <p className="text-sm text-[#e0e0d0]/80 truncate pr-2 pl-3.5">{url.originalUrl}</p>
                   </div>
                   <div className="flex items-center justify-end gap-2 flex-shrink-0">
                     <TooltipProvider>

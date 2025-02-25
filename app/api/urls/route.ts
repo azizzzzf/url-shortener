@@ -22,9 +22,14 @@ export async function GET() {
         return NextResponse.json(urls || []);
     } catch(error) {
         console.error('Error fetching URLs:', error);
-        return NextResponse.json([]);
+        // Selalu kembalikan array kosong untuk menghindari error parsing JSON
+        return NextResponse.json([], { status: 500 });
     } finally {
-        await prisma.$disconnect();
+        try {
+            await prisma.$disconnect();
+        } catch (disconnectError) {
+            console.error('Error disconnecting from database:', disconnectError);
+        }
     }
 }
 
