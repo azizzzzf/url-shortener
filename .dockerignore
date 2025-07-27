@@ -1,0 +1,120 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Testing
+coverage
+*.lcov
+.nyc_output
+
+# Next.js
+.next/
+out/
+
+# Production
+build
+dist
+
+# Misc
+.DS_Store
+*.tsbuildinfo
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git
+.git
+.gitignore
+README.md
+
+# Docker
+Dockerfile*
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Logs
+logs
+*.log
+
+# Temporary files
+tmp/
+temp/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Prisma
+.env
+prisma/migrations/
+*.db
+*.db-journal
+
+# Testing
+__tests__/
+*.test.*
+*.spec.*
+jest.config.*
+.jest/
+
+# Linting and formatting
+.eslintcache
+.prettierrc*
+.eslintrc*
+eslint.config.*
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Documentation
+*.md
+docs/
+documentation/
