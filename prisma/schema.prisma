@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("urlshortener_DATABASE_URL")
+  url      = env("urlshortener_DATABASE_URL") // Use prefixed env var for Vercel
 }
 
 model Url {

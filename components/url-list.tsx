@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { CopyIcon, EyeIcon, Trash2Icon, ExternalLinkIcon } from "lucide-react";
+import { CopyIcon, EyeIcon, Trash2Icon, ExternalLinkIcon, RefreshCwIcon } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -34,6 +34,7 @@ interface UrlListProps {
 export default function UrlList({ onUrlsChange, refreshTrigger }: UrlListProps) {
   const [urls, setUrls] = useState<Url[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const shortenerUrl = (code: string) => {
@@ -103,6 +104,12 @@ export default function UrlList({ onUrlsChange, refreshTrigger }: UrlListProps) 
     }
   }, []);
 
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchUrls();
+    setIsRefreshing(false);
+  };
+
   useEffect(() => {
     // Fetch pertama kali dengan loading
     const initialFetch = async () => {
@@ -111,10 +118,7 @@ export default function UrlList({ onUrlsChange, refreshTrigger }: UrlListProps) 
       setIsLoading(false);
     };
     initialFetch();
-
-    // Polling interval tanpa loading
-    const interval = setInterval(fetchUrls, 10000); // 10 seconds
-    return () => clearInterval(interval);
+    // Removed auto-refresh interval to prevent log bloat
   }, [fetchUrls]);
 
   // Refresh when refreshTrigger changes
@@ -162,12 +166,34 @@ export default function UrlList({ onUrlsChange, refreshTrigger }: UrlListProps) 
 
       <div className="relative z-10">
         <CardHeader className="px-4 sm:px-6 py-4 border-b border-[#8a9a5b]/20">
-          <CardTitle className="text-base sm:text-lg font-medium text-[#f5f5f0] flex items-center">
-            <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 mr-2.5 animate-pulse"></div>
-            Recent Short URLs
-            <span className="ml-2 text-sm font-normal text-[#e0e0d0]/70">
-              ({urls.length})
-            </span>
+          <CardTitle className="text-base sm:text-lg font-medium text-[#f5f5f0] flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 mr-2.5 animate-pulse"></div>
+              Recent Short URLs
+              <span className="ml-2 text-sm font-normal text-[#e0e0d0]/70">
+                ({urls.length})
+              </span>
+            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={handleManualRefresh}
+                    disabled={isRefreshing}
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-[#e0e0d0]/70 hover:text-[#f5f5f0] hover:bg-[#013220]/30"
+                  >
+                    <RefreshCwIcon
+                      className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`}
+                    />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Refresh URL list</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </CardTitle>
         </CardHeader>
 
