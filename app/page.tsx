@@ -3,7 +3,7 @@ import { RotatingText } from '@/components/ui/rotating-text';
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col bg-gradient-to-b from-[#001a10] via-[#012211] to-[#1a2f1d] pb-[60px] overflow-hidden relative">
+    <main className="min-h-screen flex flex-col bg-gradient-to-b from-[#001a10] via-[#012211] to-[#1a2f1d] pb-20 overflow-hidden relative">
       {/* Gradient overlay untuk latar belakang */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#001a10] via-[#012211]/90 to-[#014421]/70 opacity-80 z-0"></div>
       
@@ -30,13 +30,13 @@ export default function Home() {
         <div className="absolute h-[25rem] w-[25rem] rounded-full bg-gradient-to-t from-[#bcb88a]/10 to-[#014421]/10 blur-3xl -bottom-48 left-1/2"></div>
       </div>
 
-      <div className="flex-1 container mx-auto px-4 py-12 sm:py-16 md:py-20 relative z-10">
-        <div className="max-w-lg mx-auto">
-          <div className="text-center space-y-3 mb-10">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#f5f5f0] tracking-tight">
+      <div className="flex-1 container mx-auto px-4 py-8 sm:py-12 md:py-16 relative z-10">
+        <div className="w-full max-w-lg mx-auto">
+          <div className="text-center space-y-4 mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#f5f5f0] tracking-tight leading-tight">
               URL Shortener
             </h1>
-            <div className="text-base text-[#e0e0d0]/90 font-medium">
+            <div className="text-sm sm:text-base text-[#e0e0d0]/90 font-medium">
               <div className="flex items-center justify-center flex-wrap gap-x-1.5">
                 <span>Shorten your URL, make it</span>
                 <div className="relative inline-block">
@@ -52,9 +52,9 @@ export default function Home() {
                     highlightClassName="text-[#f5f5f0] font-bold animate-text-glow"
                     animationClassName="transition-all duration-300"
                   />
-                  <div 
+                  <div
                     className="absolute inset-0 border border-[#e0e0d0]/30 rounded-md bg-gradient-to-r from-[#001a10]/40 to-[#013220]/30 backdrop-blur-sm -z-10"
-                    style={{ 
+                    style={{
                       width: 'calc(100%)',
                       transition: 'width 0.3s ease-out'
                     }}
@@ -64,9 +64,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="space-y-8">
-            <UrlShortenerContainer />
-          </div>
+          <UrlShortenerContainer />
         </div>
       </div>
       <footer className="fixed bottom-0 left-0 right-0 py-4 text-center border-t border-[#8a9a5b]/20 bg-gradient-to-r from-[#001a10]/90 via-[#012211]/90 to-[#001a10]/90 backdrop-blur-sm z-10">

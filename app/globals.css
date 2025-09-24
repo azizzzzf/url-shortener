@@ -183,4 +183,51 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Fix input autofill and focus states to maintain dark theme */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgb(1 50 32 / 0.3) inset !important;
+    -webkit-text-fill-color: rgb(245 245 240) !important;
+    background-color: rgb(1 50 32 / 0.3) !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* Firefox autofill styling */
+  input:autofill {
+    background-color: rgb(1 50 32 / 0.3) !important;
+    color: rgb(245 245 240) !important;
+  }
+
+  /* Additional input state fixes */
+  input[type="text"]:focus,
+  input[type="text"]:active,
+  input[type="text"]:focus-within {
+    background-color: rgb(1 50 32 / 0.3) !important;
+    color: rgb(245 245 240) !important;
+  }
+
+  /* Remove input appearance and force consistent styling */
+  input[type="text"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: rgb(1 50 32 / 0.3) !important;
+    color: rgb(245 245 240) !important;
+  }
+
+  /* Responsive placeholder font size - smaller on mobile */
+  input[type="text"]::placeholder {
+    font-size: 0.875rem; /* 14px - smaller for mobile */
+    transition: font-size 0.2s ease;
+  }
+
+  /* Larger placeholder on tablet and desktop */
+  @media (min-width: 640px) {
+    input[type="text"]::placeholder {
+      font-size: 1rem; /* 16px - normal size for larger screens */
+    }
+  }
 }

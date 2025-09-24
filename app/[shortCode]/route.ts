@@ -1,20 +1,21 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 
-export async function GET(request: Request) {
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ shortCode: string }> }
+) {
   try {
-    // Dapatkan shortCode dari URL
-    const url = new URL(request.url);
-    const shortCode = url.pathname.split('/').pop();
-    
+    const { shortCode } = await params;
+
     if (!shortCode) {
       return NextResponse.redirect(new URL('/', request.url));
     }
 
     // Cari URL berdasarkan shortCode
-    const urlData = await prisma.url.findFirst({
+    const urlData = await prisma.url.findUnique({
       where: {
-        ShortCode: shortCode,
+        shortCode: shortCode,
       },
     });
 
@@ -34,14 +35,10 @@ export async function GET(request: Request) {
       },
     });
 
-    // Pastikan update selesai sebelum redirect
-    await prisma.$disconnect();
-
     // Redirect ke URL asli
     return NextResponse.redirect(urlData.originalUrl);
   } catch (error) {
     console.error('Error handling redirect:', error);
-    await prisma.$disconnect();
     return NextResponse.redirect(new URL('/', request.url));
   }
-} 
+}

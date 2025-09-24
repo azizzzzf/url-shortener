@@ -10,66 +10,117 @@ import { ArrowRightIcon, LinkIcon, LoaderIcon } from "lucide-react";
  * 
  * Komponen untuk mempersingkat URL dengan validasi dan feedback pengguna.
  */
-export default function ShortenForm() {
+interface ShortenFormProps {
+  onUrlCreated?: () => void;
+}
+
+export default function ShortenForm({ onUrlCreated }: ShortenFormProps) {
   // State Management
   const [url, setUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [customName, setCustomName] = useState("");
+  const [shortenedUrl, setShortenedUrl] = useState("");
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   /**
-   * Validasi URL yang dimasukkan
-   * @returns {boolean} True jika URL valid, false jika tidak
+   * Validasi input yang dimasukkan
+   * @returns {boolean} True jika input valid, false jika tidak
    */
-  const validateUrl = (): boolean => {
+  const validateInput = (): boolean => {
     // Cek apakah URL kosong
     if (!url.trim()) {
       setError("Please enter a URL");
       return false;
     }
-    
+
     // Cek apakah URL valid
     try {
       new URL(url);
-      return true;
     } catch {
       setError("Please enter a valid URL");
       return false;
     }
+
+    // Cek apakah custom name kosong
+    if (!customName.trim()) {
+      setError("Please enter a custom short name");
+      return false;
+    }
+
+    // Validasi custom name (hanya huruf, angka, dash, underscore)
+    const validPattern = /^[a-zA-Z0-9_-]+$/;
+    if (!validPattern.test(customName.trim())) {
+      setError("Custom name can only contain letters, numbers, dashes, and underscores");
+      return false;
+    }
+
+    // Cek panjang custom name
+    if (customName.trim().length < 3) {
+      setError("Custom name must be at least 3 characters long");
+      return false;
+    }
+
+    if (customName.trim().length > 30) {
+      setError("Custom name must be no more than 30 characters long");
+      return false;
+    }
+
+    return true;
   };
 
   /**
-   * Mengirim permintaan ke API untuk mempersingkat URL
+   * Submit URL to API for shortening
    */
   const shortenUrl = async (): Promise<void> => {
     try {
-      const response = await fetch("/api/shorten", {
-        method: "POST",
+      const response = await fetch('/api/shorten', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({
+          originalUrl: url,
+          customName: customName.trim(),
+        }),
       });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
+
       const data = await response.json();
-      
-      // Reset form
-      setUrl("");
-      
-      // Buat URL lengkap
-      const shortenedUrl = `https://${window.location.host}/${data.ShortCode}`;
-      
-      // Tampilkan pesan sukses
-      alert(`URL shortened successfully! Your shortened URL is: ${shortenedUrl}\n\nYou can copy this URL manually.`);
-      
-    } catch (error) {
-      console.error("Error shortening URL:", error);
-      setError("Failed to shorten URL. Please try again.");
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to shorten URL');
+      }
+
+      // Generate full shortened URL
+      const domain = window.location.host;
+      const protocol = window.location.protocol;
+      const generatedUrl = `${protocol}//${domain}/${data.shortCode}`;
+      setShortenedUrl(generatedUrl);
+
+      // Notify parent component that URL was created
+      if (onUrlCreated) {
+        onUrlCreated();
+      }
+
+    } catch (error: unknown) {
+      console.error('Error shortening URL:', error);
+      setError(error instanceof Error ? error.message : 'Failed to shorten URL. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  /**
+   * Copy URL to clipboard
+   */
+  const copyToClipboard = async (): Promise<void> => {
+    try {
+      await navigator.clipboard.writeText(shortenedUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error("Copy error:", error);
+      setError("Failed to copy URL. Please try copying manually.");
     }
   };
 
@@ -79,20 +130,31 @@ export default function ShortenForm() {
    */
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    
+
     // Reset error state
     setError("");
-    
+
     // Validasi input
-    if (!validateUrl()) {
+    if (!validateInput()) {
       return;
     }
-    
-    // Mulai loading
+
+    // Start loading
     setIsLoading(true);
-    
-    // Proses persingkatan URL
+
+    // Submit to API
     await shortenUrl();
+  };
+
+  /**
+   * Reset form
+   */
+  const resetForm = (): void => {
+    setUrl("");
+    setCustomName("");
+    setShortenedUrl("");
+    setError("");
+    setCopied(false);
   };
 
   // Render UI Components
@@ -113,11 +175,11 @@ export default function ShortenForm() {
     return isLoading ? (
       <>
         <LoaderIcon className="mr-2 h-4 w-4 animate-spin" />
-        Shortening...
+        Creating...
       </>
     ) : (
       <>
-        Shorten URL
+        Create Short URL
         <ArrowRightIcon className="ml-2 h-4 w-4" />
       </>
     );
@@ -130,8 +192,8 @@ export default function ShortenForm() {
       </div>
       
       {/* Form Section */}
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-4">
           <div className="relative">
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#e0e0d0]/70">
               <LinkIcon className="h-5 w-5" />
@@ -142,21 +204,70 @@ export default function ShortenForm() {
               placeholder="Enter your long URL here"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className="h-11 w-full pl-10 pr-4 font-medium bg-[#013220]/30 border-[#8a9a5b]/20 text-[#f5f5f0] placeholder:text-[#e0e0d0]/60 focus:border-[#8a9a5b]/40 focus:ring-1 focus:ring-[#8a9a5b]/40 transition-colors"
+              className="h-12 w-full pl-10 pr-4 font-medium bg-[#013220]/30 hover:bg-[#013220]/30 focus:bg-[#013220]/30 border-[#8a9a5b]/20 text-[#f5f5f0] placeholder:text-[#e0e0d0]/60 focus:border-[#8a9a5b]/40 focus:ring-1 focus:ring-[#8a9a5b]/40 transition-colors rounded-lg autofill:!bg-[#013220]/30"
               required
             />
           </div>
+
+          <div className="relative">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#e0e0d0]/70 text-sm">
+              @
+            </div>
+            <Input
+              id="custom-name-input"
+              type="text"
+              placeholder="Enter custom short name (e.g., my-link)"
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value.toLowerCase().replace(/[^a-zA-Z0-9_-]/g, ''))}
+              className="h-12 w-full pl-10 pr-4 font-medium bg-[#013220]/30 hover:bg-[#013220]/30 focus:bg-[#013220]/30 border-[#8a9a5b]/20 text-[#f5f5f0] placeholder:text-[#e0e0d0]/60 focus:border-[#8a9a5b]/40 focus:ring-1 focus:ring-[#8a9a5b]/40 transition-colors rounded-lg autofill:!bg-[#013220]/30"
+              maxLength={30}
+              required
+            />
+          </div>
+
           {renderErrorMessage()}
         </div>
-        
-        <Button 
-          type="submit" 
+
+        <Button
+          type="submit"
           disabled={isLoading}
-          className="w-full h-11 bg-gradient-to-r from-[#013220] to-[#014421] hover:from-[#014421] hover:to-[#015622] text-[#f5f5f0] border border-[#8a9a5b]/30 shadow-md"
+          className="w-full h-12 bg-gradient-to-r from-[#013220] to-[#014421] hover:from-[#014421] hover:to-[#015622] text-[#f5f5f0] border border-[#8a9a5b]/30 shadow-md disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium"
         >
           {renderButtonContent()}
         </Button>
       </form>
+
+      {/* Result Section */}
+      {shortenedUrl && (
+        <div className="mt-8 p-4 sm:p-6 bg-[#013220]/20 border border-[#8a9a5b]/30 rounded-xl">
+          <div className="space-y-3">
+            <p className="text-sm text-[#e0e0d0]/80">Your shortened URL:</p>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="flex-1 p-3 bg-[#001a10]/30 border border-[#8a9a5b]/20 rounded-lg">
+                <p className="text-[#f5f5f0] font-medium break-all text-sm">{shortenedUrl}</p>
+              </div>
+              <Button
+                onClick={copyToClipboard}
+                className={`px-6 py-3 sm:px-4 sm:py-2 ${copied ? 'bg-green-600/80 hover:bg-green-600' : 'bg-[#013220] hover:bg-[#014421]'} text-[#f5f5f0] transition-colors rounded-lg font-medium whitespace-nowrap`}
+              >
+                {copied ? 'Copied!' : 'Copy'}
+              </Button>
+            </div>
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-[#e0e0d0]/60">
+                Note: This URL will redirect to {url}
+              </p>
+              <Button
+                onClick={resetForm}
+                variant="ghost"
+                className="text-xs text-[#e0e0d0]/70 hover:text-[#f5f5f0] hover:bg-transparent"
+              >
+                Create Another
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Tips Section */}
       <div className="pt-2 border-t border-[#8a9a5b]/20">
